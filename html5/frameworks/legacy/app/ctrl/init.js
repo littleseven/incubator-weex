@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 /**
  * @fileOverview
  * instance controls from native
@@ -88,21 +106,51 @@ export function init (app, code, data, services) {
         const handler = function () {
           args[0](...args.slice(2))
         }
-        timer.setTimeout(handler, args[1])
-        return app.doc.taskCenter.callbackManager.lastCallbackId.toString()
+
+        let timerId, callbackId
+
+        if (global.setTimeoutWeex && (typeof global.setTimeoutWeex === 'function')) {
+          callbackId = app.doc.taskCenter.normalize(handler)
+          timerId = global.setTimeoutWeex(app.id, callbackId, args[1])
+          return timerId
+        }
+        else {
+          timer.setTimeout(handler, args[1])
+          return app.doc.taskCenter.callbackManager.lastCallbackId.toString()
+        }
       },
       setInterval: (...args) => {
         const handler = function () {
           args[0](...args.slice(2))
         }
-        timer.setInterval(handler, args[1])
-        return app.doc.taskCenter.callbackManager.lastCallbackId.toString()
+
+        let timerId, callbackId
+
+        if (global.setIntervalWeex && (typeof global.setIntervalWeex === 'function')) {
+          callbackId = app.doc.taskCenter.normalize(handler)
+          timerId = global.setIntervalWeex(app.id, callbackId, args[1])
+          return timerId
+        }
+        else {
+          timer.setInterval(handler, args[1])
+          return app.doc.taskCenter.callbackManager.lastCallbackId.toString()
+        }
       },
       clearTimeout: (n) => {
-        timer.clearTimeout(n)
+        if (global.clearTimeoutWeex && (typeof global.clearTimeoutWeex === 'function')) {
+          global.clearTimeoutWeex(n)
+        }
+        else {
+          timer.clearTimeout(n)
+        }
       },
       clearInterval: (n) => {
-        timer.clearInterval(n)
+        if (global.clearIntervalWeex && (typeof global.clearIntervalWeex === 'function')) {
+          global.clearIntervalWeex(n)
+        }
+        else {
+          timer.clearInterval(n)
+        }
       }
     })
   }
