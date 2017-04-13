@@ -18,16 +18,13 @@
  */
 package com.taobao.weex.bridge;
 
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.common.WXJSService;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class WXServiceManager {
 
@@ -44,8 +41,7 @@ public class WXServiceManager {
             param2 += ", " + key + ": \"" + value + "\"";
         }
         String serviceJs = String.format(";(function(service, options){ ;%s; })({ %s }, { %s });", serviceScript, param1, param2);
-
-        if(WXEnvironment.isApkDebugable()) {
+        if (WXEnvironment.isDebugLibExist()) {
             WXJSService service = new WXJSService();
             service.setName(name);
             service.setScript(serviceScript);
@@ -60,7 +56,7 @@ public class WXServiceManager {
     public static boolean unRegisterService(String name) {
         if (TextUtils.isEmpty(name)) return false;
 
-        if(WXEnvironment.isApkDebugable()) {
+        if(WXEnvironment.isDebugLibExist()) {
             sInstanceJSServiceMap.remove(name);
         }
 

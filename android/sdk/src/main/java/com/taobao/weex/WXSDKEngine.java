@@ -517,6 +517,10 @@ public class WXSDKEngine {
     WXBridgeManager.getInstance().initScriptsFramework(framework);
     WXModuleManager.reload();
     WXComponentRegistry.reload();
+    if (WXEnvironment.isDebugLibExist()) {
+      WXServiceManager.execAllCacheJsService();
+    }
+
     WXSDKManager.getInstance().postOnUiThread(new Runnable() {
       @Override
       public void run() {

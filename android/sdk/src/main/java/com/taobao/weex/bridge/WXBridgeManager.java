@@ -181,7 +181,7 @@ public class WXBridgeManager implements Callback,BactchExecutor {
     if (mWxDebugProxy != null) {
       mWxDebugProxy.stop(false);
     }
-    if (WXEnvironment.sDebugServerConnectable) {
+    if (WXEnvironment.sDebugServerConnectable && WXEnvironment.isDebugLibExist()) {
       try {
         Class clazz =  Class.forName("com.taobao.weex.devtools.debug.DebugServerProxy");
         if (clazz != null) {
@@ -205,8 +205,6 @@ public class WXBridgeManager implements Callback,BactchExecutor {
       } catch (InvocationTargetException e) {
         // ignore
       }
-
-      WXServiceManager.execAllCacheJsService();
     }
     if (remoteDebug && mWxDebugProxy != null) {
       mWXBridge = mWxDebugProxy.getWXBridge();

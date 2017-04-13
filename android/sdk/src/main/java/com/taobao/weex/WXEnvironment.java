@@ -55,6 +55,7 @@ public class WXEnvironment {
   @Deprecated
   public static int sDefaultWidth = 750;
   public volatile static boolean JsFrameworkInit = false;
+  private static boolean isDebugLibExist = false;
 
   public static final String SETTING_EXCLUDE_X86SUPPORT = "env_exclude_x86";
 
@@ -178,6 +179,18 @@ public class WXEnvironment {
                    + "isX86AndExclueded: "+ isX86AndExcluded);
     }
     return isCPUSupport;
+  }
+
+  static {
+    try {
+      isDebugLibExist = Class.forName("com.taobao.weex.devtools.debug.DebugServerProxy") != null;
+    } catch (ClassNotFoundException e) {
+      //ignore
+    }
+  }
+
+  public static boolean isDebugLibExist() {
+    return isDebugLibExist;
   }
 
   public static boolean isApkDebugable() {
